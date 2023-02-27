@@ -2,6 +2,7 @@
     <input type="text">
     <button v-on:click="addToDo">Hinzufügen</button>
 </template>
+
 <script>
 export default {
     name: "AddToDo",
@@ -18,11 +19,12 @@ export default {
     },
     methods: {
         addToDo() {
-            
+
         }
     },
 }
 </script>
+
 <style>
 
 </style>
