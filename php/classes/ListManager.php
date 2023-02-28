@@ -12,13 +12,13 @@ class ListManager {
     }
 
     public function getAllListTitles() {
-        $query = "SELECT `title` FROM `lists` WHERE `userId` = :userId";
+        $query = "SELECT `id`, `title` FROM `lists` WHERE `userId` = :userId";
         return DBAccess::selectQuery($query, ["userId" => $this->idUser]);
     }
 
-    public function addNewList(String $title, String $description) {
-        $query = "INSERT INTO lists (`title`, `description`) VALUES (:title, :desc);";
-        $listId = DBAccess::insertQuery($query, ["title" => $title, "desc" => $description]);
+    public static function addNewList(int $idUser, String $title) {
+        $query = "INSERT INTO lists (`userId`, `title`) VALUES (:userId, :title);";
+        $listId = DBAccess::insertQuery($query, ["userId" => $idUser, "title" => $title]);
         return $listId;
     }
 

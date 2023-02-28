@@ -35,10 +35,18 @@ require_once("classes/ListManager.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $data = json_decode(file_get_contents('php://input'), true);
+    $idUser = 1;//manageToken($data["token"]); // TODO: remove hardcoded id
+
     $request = $data["r"];
 
     switch ($request) {
-        case "createList":
+        case "addList":
+            $title = $data['title'];
+            $listId = ListManager::addNewList($idUser, $title);
+            echo json_encode([
+                "status" => true,
+                "id" => $listId,
+            ]);
             break;
         case "deleteList":
             break;
@@ -120,6 +128,17 @@ function getParameter($param, $default = null, $type = "POST") {
     }
 
     return $value;
+}
+
+function manageToken(String $token) {
+    if (isset($_SESSION["token"]) && $_SESSION["token"] == $token) {
+        echo "test";
+        if (isset($_SESSION["userId"])) {
+            return (int) $_SESSION["userId"];
+        }
+    }
+
+    return -1;
 }
 
 function loginUser(String $email, String $password) {

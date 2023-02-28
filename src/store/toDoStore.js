@@ -11,7 +11,10 @@ const toDoStore = createStore({
     getters: {
         isLoggedIn(state) {
             return state.isLoggedIn;
-        }
+        },
+        getToken(state) {
+            return state.token;
+        },
     },
     mutations: {
         addToDo(state, list, title, content) {

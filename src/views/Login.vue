@@ -49,6 +49,7 @@ export default {
                 password: this.password,
             }).then(response => {
                 if (response.data.status != "false") {
+                    localStorage.setItem("token", response.data.token);
                     this.$store.commit('setLogin', {token: response.data.token});
                     this.$router.push("overview");
                 }
