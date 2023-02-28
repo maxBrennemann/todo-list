@@ -24,3 +24,9 @@ ALTER TABLE `files` ADD CONSTRAINT `deleteOnToDoDelete` FOREIGN KEY (`idToDo`) R
 CREATE TABLE `todo`.`lists_to_users` (`idList` INT NOT NULL , `idAdditionalUser` INT NOT NULL ) ENGINE = InnoDB;
 
 ALTER TABLE `lists_to_users` ADD UNIQUE(`idList`, `idAdditionalUser`);
+
+ALTER TABLE `user` CHANGE `username` `username` VARCHAR(32) NOT NULL;
+
+ALTER TABLE `user` CHANGE `email` `email` VARCHAR(32) NOT NULL;
+
+ALTER TABLE `user` CHANGE `pwHash` `pwHash` VARCHAR(64) NOT NULL;

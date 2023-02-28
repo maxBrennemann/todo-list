@@ -7,8 +7,13 @@ class ListManager {
     private $id;
     private $idUser;
 
-    function __construct(int $id) {
-        $this->id = $id;
+    function __construct(int $idUser) {
+        $this->idUser = $idUser;
+    }
+
+    public function getAllListTitles() {
+        $query = "SELECT `title` FROM `lists` WHERE `userId` = :userId";
+        return DBAccess::selectQuery($query, ["userId" => $this->idUser]);
     }
 
     public function addNewList(String $title, String $description) {

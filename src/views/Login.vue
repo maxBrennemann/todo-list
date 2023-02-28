@@ -17,9 +17,14 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
     name: "Login",
     components: {
+
+    },
+    computed: {
 
     },
     data() {
@@ -34,8 +39,24 @@ export default {
     methods: {
         loginUser(e) {
             e.preventDefault();
-            // TODO: an server senden
-        }
+
+            if (this.username == "" || this.password == "")
+                return;
+
+            axios.post(`http://localhost/todo-list/php/main.php`, {
+                r: "login",
+                username: this.username,
+                password: this.password,
+            }).then(response => {
+                if (response.data.status != "false") {
+                    this.$store.commit('setLogin', {token: response.data.token});
+                    this.$router.push("overview");
+                }
+            });
+        },
+        ...mapMutations([
+            'setLogin'
+        ]),
     },
 }
 </script>
