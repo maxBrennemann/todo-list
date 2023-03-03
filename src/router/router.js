@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/views/Login.vue'
 import Lists from '@/views/Lists.vue'
 import Register from '@/views/Register.vue'
-import toDoStore from '../store/toDoStore.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,9 +15,14 @@ const router = createRouter({
       }
     },
     {
-      path: '/login',
+      path: '/login/',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/lists/:listId',
+      name: 'Liste',
+      component: Lists,
     },
     {
       path: '/register',

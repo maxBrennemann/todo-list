@@ -1,18 +1,18 @@
 <template>
     <div>
         <form>
-            <label>
+            <label class="block">
                 <input type="text" v-model="username">
-                Benutzername oder E-Mail Adresse
+                <span>Benutzername oder E-Mail Adresse</span>
             </label>
-            <label>
+            <label class="block">
                 <input type="password" v-model="password">
-                Passwort
+                <span>Passwort</span>
             </label>
             <input type="submit" v-on:click="loginUser">
             <span>Einloggen</span>
         </form>
-        <p>Noch nicht registiert? Dann bitte <a href="#">hier</a> drücken!</p>
+        <p>Noch nicht registiert? Dann bitte  <router-link to="/register">hier</router-link> drücken!</p>
     </div>
 </template>
 

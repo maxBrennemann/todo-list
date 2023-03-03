@@ -30,3 +30,13 @@ ALTER TABLE `user` CHANGE `username` `username` VARCHAR(32) NOT NULL;
 ALTER TABLE `user` CHANGE `email` `email` VARCHAR(32) NOT NULL;
 
 ALTER TABLE `user` CHANGE `pwHash` `pwHash` VARCHAR(64) NOT NULL;
+
+ALTER TABLE `user` CHANGE `username` `username` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+ALTER TABLE `todos` DROP `creationTime`;
+
+ALTER TABLE `todos` ADD `creationTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `description`;
+
+ALTER TABLE `lists` CHANGE `description` `description` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+ALTER TABLE `lists` CHANGE `creationTime` `creationTime` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
