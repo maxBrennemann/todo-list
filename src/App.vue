@@ -24,9 +24,6 @@ export default {
 <template>
   <div>
     <main class="sm:ml-64 bg-gradient-to-r from-cyan-500 to-cyan-100 h-screen">
-      <header>
-        <h2>Lege deine ToDo-Listen an!</h2>
-      </header>
       <router-view class=""></router-view>
     </main>
     <list-overview></list-overview>

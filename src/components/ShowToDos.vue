@@ -1,10 +1,13 @@
 <template>
     <div>
-        <div v-for="toDo in toDos" class="m-2 bg-emerald-400" v-on:drop="handleFiles($event, toDo.id)">
-            <input type="text" v-bind:value="toDo.title" class="w-full text-xl p-2 bg-emerald-400" v-on:change="changeTitle($event, toDo.id)">
-            <textarea class="text-sm mt-2 w-5/6 p-2 bg-emerald-400" v-on:change="changeDescription($event, toDo.id)">{{ toDo.content }}</textarea>
-            <edit-to-do></edit-to-do>
-            <delete-to-do></delete-to-do>
+        <div v-for="toDo in toDos" class="m-2 bg-emerald-400" v-on:drop="handleFiles($event, toDo.id)" v-on:dragover="handleDragover($event, toDo.id)" v-on:mouseenter="hoverItem = toDo.id" v-on:mouseleave="hoverItem = 0">
+            <input type="checkbox" class="inline-block" @click="checkToDo($event, toDo)">
+            <input type="text" v-bind:value="toDo.title" class="inline-block text-xl p-2 bg-emerald-400 font-serif" v-on:change="changeTitle($event, toDo.id)">
+            <textarea class="text-sm mt-2 w-5/6 p-2 bg-emerald-400 font-sans" v-on:change="changeDescription($event, toDo.id)">{{ toDo.content }}</textarea>
+            <button v-if="hoverItem == toDo.id" v-on:change="deleteToDo($event, toDo.id)">Löschen</button>
+        </div>
+        <div>
+            <img v-for="image in images" :src="image.src" :alt="image.alt">
         </div>
         <input type="text" v-model="newTitle">
         <textarea v-model="newContent"></textarea>
@@ -13,16 +16,10 @@
 </template>
 
 <script>
-import EditToDo from "../components/EditToDo.vue";
-import DeleteToDo from "../components/DeleteToDo.vue";
 import axios from "axios";
 
 export default {
     name: "Lists",
-    components: {
-        EditToDo,
-        DeleteToDo,
-    },
     data() {
         return {
             toDos: [
@@ -40,6 +37,9 @@ export default {
             newTitle: "",
             newContent: "",
             listId: 0,
+            uploadableFiles: [],
+            images: [],
+            hoverItem: 0,
         }
     },
     watch: {
@@ -75,7 +75,7 @@ export default {
                 r: "editDescription",
                 listItemId: id,
                 listId: this.listId,
-                description: description, 
+                description: description,
             });
         },
         addToDo() {
@@ -95,7 +95,38 @@ export default {
                 });
             }
         },
-        handleFiles(event, id) {
+        handleFiles(e, id) {
+            e.preventDefault();
+            if (e.dataTransfer.items) {
+                [...e.dataTransfer.items].forEach(async (item) => {
+                    if (item.kind === 'file' && item.type.match('image.*')) {
+                        const file = item.getAsFile();
+                        const result = await this.readFile(file);
+
+                        const fileData = {
+                            src: result,
+                            alt: "Hochgeladene Datei",
+                        };
+                        this.images.push(fileData);  
+                        this.uploadableFiles.push(file);
+                    }
+                });
+            }
+        },
+        readFile(file) {
+            return new Promise((resolve, reject) => {
+                var fr = new FileReader();
+                fr.onload = () => {
+                    resolve(fr.result);
+                };
+                fr.onerror = reject;
+                fr.readAsDataURL(file);
+            });
+        },
+        handleDragover(event, id) {
+            event.preventDefault();
+        },
+        deleteToDo(event, id) {
 
         }
     },

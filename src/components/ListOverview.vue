@@ -1,6 +1,6 @@
 <template>
     <div id="sidebar" class="fixed top-0 bottom-0 w-64">
-        <h2>Meine Listen</h2>
+        <p>Home</p>
         <a href="#" v-if="lists.length == 0">Keine Listen vorhanden!</a>
         <router-link :to="'/lists/' + listElement.id" v-else v-for="listElement in lists" class="block" v-bind:id="listElement.id">{{ listElement.title }}</router-link>
         <input type="text" v-model="listTitle">
