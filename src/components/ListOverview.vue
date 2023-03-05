@@ -78,7 +78,7 @@ export default {
     },
     methods: {
         getLists() {
-            axios.get(`http://localhost/todo-list/php/main.php?r=listOverview&user=${this.getUserId()}`).then(response => {
+            axios.get(`/php/main.php?r=listOverview&user=${this.getUserId()}`).then(response => {
                 this.lists = response.data;
                 console.log(this.lists);
             });
@@ -93,7 +93,7 @@ export default {
         },
         addList() {
             if (this.listTitle != "") {
-                axios.post(`http://localhost/todo-list/php/main.php`, {
+                axios.post(`/php/main.php`, {
                     r: "addList",
                     title: this.listTitle,
                     idUser: this.idUser,
@@ -110,7 +110,7 @@ export default {
             }
         },
         deleteList(id) {
-            axios.post(`http://localhost/todo-list/php/main.php`, {
+            axios.post(`/php/main.php`, {
                 r: "deleteList",
                 idUser: this.idUser,
                 listId: id,

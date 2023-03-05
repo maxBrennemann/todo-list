@@ -43,7 +43,7 @@ export default {
             if (this.username == "" || this.password == "")
                 return;
 
-            axios.post(`http://localhost/todo-list/php/main.php`, {
+            axios.post(`/php/main.php`, {
                 r: "login",
                 username: this.username,
                 password: this.password,
