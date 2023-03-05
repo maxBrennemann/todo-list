@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  todo-app:
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - php-backend
+
+  php-backend:
+    build: ./php
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=myapp
+      - DB_USERNAME=root
+      - DB_PASSWORD=example
+
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=todo
+      - MYSQL_USER=todo-app-user
+      - MYSQL_PASSWORD=default
+      - MYSQL_ROOT_PASSWORD=default
+    ports:
+      - "3306:3306"
