@@ -22,7 +22,7 @@ class ListManager {
         return $listId;
     }
 
-    public function deleteList(int $listId) {
+    public static function deleteList(int $listId) {
         $query = "DELETE FROM lists WHERE id = :id";
         DBAccess::deleteQuery($query, ["id" => $listId]);
     }

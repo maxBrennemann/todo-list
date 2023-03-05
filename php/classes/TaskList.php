@@ -11,9 +11,26 @@ class TaskList {
     }
 
     public static function get(int $listId) {
-        $query = "SELECT `id`, `title`, `description` FROM `todos` WHERE `listId` = :listId AND `state` = 'active';";
+        $query = "SELECT `id`, `title`, `description`, `state` FROM `todos` WHERE `listId` = :listId AND (`state` = 'active' OR `state` = 'done');";
         $results = DBAccess::selectQuery($query, ["listId" => $listId]);
         return $results;
+    }
+
+    public static function getListInfo(int $listId) {
+        $query = "SELECT `title` FROM lists WHERE id = :listId";
+        $result = DBAccess::selectQuery($query, ["listId" => $listId]);
+        if ($result != null) {
+            return $result[0]["title"];
+        }
+        return $result;
+    }
+
+    public static function editListTitle(int $listId, String $listTitle) {
+        $query = "UPDATE `lists` SET `title` = :title WHERE `id` = :id;";
+        DBAccess::updateQuery($query, [
+            "title" => $listTitle,
+            "id" => $listId,
+        ]);
     }
 
     public static function editTitle(int $listItemId, String $title) {
@@ -26,12 +43,18 @@ class TaskList {
         DBAccess::updateQuery($query, ["listItemId" => $listItemId, "description" => $description]);
     }
 
-    function removeToDo() {
-
+    public static function removeToDo(int $listItemId) {
+        $query = "DELETE FROM `todos` WHERE `id` = :listItemId;";
+        DBAccess::deleteQuery($query, ["listItemId" => $listItemId]);
+        return "success";
     }
 
-    function markAsDone() {
-
+    public static function updateStatus(int $listItemId, String $status) {
+        $query= "UPDATE `todos` SET `state` = :status WHERE `id` = :id;";
+        DBAccess::updateQuery($query, [
+            "status" => $status,
+            "id" => $listItemId,
+        ]);
     }
 
 }

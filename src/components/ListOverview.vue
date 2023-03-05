@@ -28,12 +28,18 @@
         </a>
         <h3 class="font-medium mt-2">LISTEN</h3>
         <a href="#" v-if="lists.length == 0">Keine Listen vorhanden!</a>
-        <router-link :to="'/lists/' + listElement.id" v-else v-for="listElement in lists" class="block p-1 cursor-pointer" v-bind:id="listElement.id">
+        <router-link :to="'/lists/' + listElement.id" v-else v-for="listElement in lists" class="block p-1 cursor-pointer hoverParentItem" v-bind:id="listElement.id">
             <svg-icon type="mdi" style="width: 15px; height;: 15px" :path="iconList" class="inline"></svg-icon>
             <span class="inline align-middle ml-1">{{ listElement.title }}</span>
+            <button class="hoverHidden hoverShow float-right pr-8" v-on:click="deleteList(listElement.id)">
+                <svg-icon type="mdi" style="width: 15px; height: 15px" :path="iconDelete" class="inline"></svg-icon>
+            </button>
         </router-link>
-        <input type="text" class="hidden" v-model="listTitle">
-        <button v-on:click="addList" class="p-1 cursor-pointer">
+        <div v-bind:class="{ 'hidden': showNewListTitle }" class="block p-1">
+            <svg-icon type="mdi" style="width: 15px; height;: 15px" :path="iconList" class="inline"></svg-icon>
+            <input type="text" ref="inputTitle" v-model="listTitle" class="inline align-middle ml-1 bg-inherit focus:outline-none" v-bind:onChange="addList">
+        </div>
+        <button v-on:click="showAddList" class="p-1 cursor-pointer">
             <svg-icon type="mdi" style="width: 15px; height: 15px" :path="iconAdd" class="inline"></svg-icon>
             <span class="inline align-middle ml-1">Neue Liste hinzufügen</span>
         </button>
@@ -43,7 +49,7 @@
 <script>
 import axios from 'axios';
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiMagnify, mdiPlusThick, mdiCalendarTodayOutline, mdiCalendarOutline, mdiCalendarMonthOutline, mdiPin, mdiFormatListBulleted } from '@mdi/js';
+import { mdiMagnify, mdiPlusThick, mdiCalendarTodayOutline, mdiCalendarOutline, mdiCalendarMonthOutline, mdiPin, mdiFormatListBulleted, mdiDelete } from '@mdi/js';
 
 export default {
     name: "ListOverview",
@@ -55,6 +61,8 @@ export default {
             lists: [],
             listTitle: "",
 
+            showNewListTitle: true,
+
             iconSearch: mdiMagnify,
             iconAdd: mdiPlusThick,
             iconToday: mdiCalendarTodayOutline,
@@ -62,6 +70,7 @@ export default {
             iconMonth: mdiCalendarMonthOutline,
             iconPin: mdiPin,
             iconList: mdiFormatListBulleted,
+            iconDelete: mdiDelete,
         }
     },
     mounted() {
@@ -77,6 +86,11 @@ export default {
         getUserId() {
             return 1; // TODO: remove hardcoded id
         },
+        showAddList() {
+            this.showNewListTitle = false;
+            /* https://stackoverflow.com/questions/56093602/cant-get-vue-to-focus-on-input */
+            this.$nextTick(() => this.$refs.inputTitle.focus())
+        },
         addList() {
             if (this.listTitle != "") {
                 axios.post(`http://localhost/todo-list/php/main.php`, {
@@ -90,14 +104,28 @@ export default {
                             title: this.listTitle
                         });
                         this.listTitle = "";
+                        this.showNewListTitle = true;
                     }
                 });
             }
-        }
+        },
+        deleteList(id) {
+            axios.post(`http://localhost/todo-list/php/main.php`, {
+                r: "deleteList",
+                idUser: this.idUser,
+                listId: id,
+            });
+        },
     },
 }
 </script>
 
 <style>
+    .hoverHidden {
+        visibility: hidden;
+    }
 
+    .hoverParentItem:hover .hoverShow {
+        visibility: visible;
+    }
 </style>

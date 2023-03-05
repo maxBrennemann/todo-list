@@ -49,6 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             ]);
             break;
         case "deleteList":
+            $listId = (int) $data["listId"];
+            ListManager::deleteList($listId);
             break;
         case "addToDo":
             $listId = $data["listId"];
@@ -60,12 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             ]);
             break;
         case "deleteToDo":
-            break;
-        case "editToDo":
+            $listItemId = $data["listItemId"];
+            $status = TaskList::removeToDo($listItemId);
+            echo json_encode(["status" => $status]);
             break;
         case "attachFile":
             break;
         case "changeStatus":
+            $listItemId = (int) $data["listItemId"];
+            $status = $data["checked"];
+
+            TaskList::updateStatus($listItemId, $status);
             break;
         case "login":
             $email = $data['username'];
@@ -92,6 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 echo json_encode(["status" => "success", "user" => $userId]);
             }
             break;
+        case "editListTitle":
+            $listId = $data["listId"];
+            $title = $data["title"];
+            TaskList::editListTitle($listId, $title);
+            break;
         case "editTitle":
             $listItemId = $data["listItemId"];
             $title = $data["title"];
@@ -117,7 +129,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "getList":
             $listId = (int) getParameter("listId", 0, "GET");
             $result = TaskList::get($listId);
-            echo json_encode($result);
+            $listName = TaskList::getListInfo($listId);
+            echo json_encode([
+                "todos" => $result,
+                "name" => $listName,
+            ]);
             break;
         default:
             echo "no request was fired";

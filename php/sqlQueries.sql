@@ -40,3 +40,5 @@ ALTER TABLE `todos` ADD `creationTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTA
 ALTER TABLE `lists` CHANGE `description` `description` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 ALTER TABLE `lists` CHANGE `creationTime` `creationTime` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE `todos` CHANGE `state` `state` ENUM('active','deleted','done') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active';
