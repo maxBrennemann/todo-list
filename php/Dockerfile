@@ -1,13 +1,36 @@
-FROM php:7.4-apache
+FROM php:8.1-apache
 
-WORKDIR /var/www/html
+COPY . /var/www/html
+# Copy custom php.ini if needed
+# COPY php.ini /usr/local/etc/php/
 
-RUN a2enmod rewrite headers
+# Install any additional PHP extensions or dependencies here
+# For example:
+# RUN docker-php-ext-install pdo_mysql
 
-RUN docker-php-ext-install pdo_mysql
+# Change Apache document root
+# RUN sed -ri -e 's!/var/www/html!/php!g' /etc/apache2/sites-available/*.conf
+# RUN sed -ri -e 's!/var/www/!/php!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-COPY . .
+# Enable Apache modules if needed
+# For example:
+# RUN a2enmod rewrite
 
 EXPOSE 80
 
-CMD [ "apache2-foreground" ]
+
+
+#FROM php:7.4-apache
+
+#WORKDIR /var/www/html
+
+#RUN a2enmod rewrite headers
+
+#RUN docker-php-ext-install pdo_mysql
+
+#COPY . .
+#COPY . /var/www/html
+
+#EXPOSE 80
+
+#CMD [ "apache2-foreground" ]

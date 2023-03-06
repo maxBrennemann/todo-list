@@ -4,22 +4,30 @@ services:
   todo-app:
     build: ./
     ports:
-      - "8080:8080"
+      - "80:80"
     depends_on:
       - php-backend
+    #volumes:
+      #- /node_modules
+      #- ./:/app
+      #- /php
+      #- /node_modules
 
   php-backend:
-    build: ./php
+    build:
+      dockerfile: php/Dockerfile
     ports:
-      - "8000:80"
+      - "8080:80"
+    #volumes:
+      #- /php:/var/www/html
     depends_on:
       - db
     environment:
       - DB_HOST=db
       - DB_PORT=3306
-      - DB_DATABASE=myapp
-      - DB_USERNAME=root
-      - DB_PASSWORD=example
+      - DB_DATABASE=todo
+      - DB_USERNAME=todo-app-user
+      - DB_PASSWORD=default
 
   db:
     image: mysql:latest
