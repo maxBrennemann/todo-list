@@ -43,7 +43,7 @@ export default {
             if (this.username == "" || this.password == "")
                 return;
 
-            axios.post(`/php/main.php`, {
+            axios.post(`/php-backend/main.php`, {
                 r: "login",
                 username: this.username,
                 password: this.password,

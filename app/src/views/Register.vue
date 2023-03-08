@@ -38,7 +38,7 @@ export default {
             if (this.password != this.passwordRepeated)
                 return;
 
-            axios.post(`/php/main.php`, {
+            axios.post(`/php-backend/main.php`, {
                 r: "register",
                 username: this.username,
                 password: this.password,

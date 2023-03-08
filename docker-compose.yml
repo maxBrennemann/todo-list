@@ -1,26 +1,13 @@
 version: '3'
 
 services:
-  todo-app:
+  web:
+    image: nginx
     build: /app
-     # dockerfile: app/Dockerfile
+    volumes:
+     - ./app:/var/www/html/
     ports:
       - "80:80"
-    depends_on:
-      - php-backend
-    #volumes:
-      #- /node_modules
-      #- ./:/app
-      #- /php
-      #- /node_modules
-
-  php-backend:
-    build:
-      dockerfile: php/Dockerfile
-    ports:
-      - "8080:80"
-    #volumes:
-      #- /php:/var/www/html
     depends_on:
       - db
     environment:

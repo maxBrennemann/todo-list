@@ -72,7 +72,7 @@ export default {
     },
     methods: {
         load() {
-            axios.get(`/php/main.php?r=getList&listId=${this.listId}`).then(response => {
+            axios.get(`/php-backend/main.php?r=getList&listId=${this.listId}`).then(response => {
                 this.toDos = response.data.todos;
                 this.pageTitle = response.data.name;
             });
@@ -80,7 +80,7 @@ export default {
         changeTitle(event, id) {
             if (event.target.value !== "") {
                 const title = event.target.value;
-                axios.post(`/php/main.php`, {
+                axios.post(`/php-backend/main.php`, {
                     r: "editTitle",
                     listItemId: id,
                     listId: this.listId,
@@ -90,7 +90,7 @@ export default {
         },
         changeDescription(event, id) {
             const description = event.target.value;
-            axios.post(`/php/main.php`, {
+            axios.post(`/php-backend/main.php`, {
                 r: "editDescription",
                 listItemId: id,
                 listId: this.listId,
@@ -99,7 +99,7 @@ export default {
         },
         addToDo() {
             if (this.newText !== "") {
-                axios.post(`/php/main.php`, {
+                axios.post(`/php-backend/main.php`, {
                     r: "addToDo",
                     listId: this.listId,
                     title: this.newTitle,
@@ -146,7 +146,7 @@ export default {
             event.preventDefault();
         },
         deleteToDo(id) {
-            axios.post(`/php/main.php`, {
+            axios.post(`/php-backend/main.php`, {
                 r: "deleteToDo",
                 listItemId: id,
                 listId: this.listId,
@@ -166,7 +166,7 @@ export default {
                         element.state = "active";
                     }
 
-                    axios.post(`/php/main.php`, {
+                    axios.post(`/php-backend/main.php`, {
                         r: "changeStatus",
                         listItemId: id,
                         checked: element.state,
@@ -176,7 +176,7 @@ export default {
         },
         editListTitle() {
             const newTitle = this.$refs.editTitle.value;
-            axios.post(`/php/main.php`, {
+            axios.post(`/php-backend/main.php`, {
                 r: "editListTitle",
                 listId: this.listId,
                 title: newTitle,
