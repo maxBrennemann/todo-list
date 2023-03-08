@@ -4,7 +4,7 @@ import Lists from '@/views/Lists.vue'
 import Register from '@/views/Register.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/apps/todo-list/'),
   routes: [
     {
       path: '/overview',
