@@ -11,10 +11,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  server: {
-    port: 80
-  },
-  preview: {
-    port: 8081
-  }
+  base: "/apps/todo-list/",
+  assetsPublicPath: "apps/todo-list",
+  outputDir: "apps/todo-list",
+  publicPath: "/apps/todo-list",
 })
