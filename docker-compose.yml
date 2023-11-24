@@ -9,12 +9,9 @@ services:
       - 9000:80
     volumes:
       - ./php:/var/www/html/app
-      #- ./config/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./vendor:/var/www/html/vendor
       - ./.env:/var/www/html/.env
       - ./.htaccess:/var/www/html/.htaccess
-    networks:
-      - internal
 
   frontend:
     build:
@@ -24,29 +21,34 @@ services:
     ports:
       - 5173:5173
     volumes:
-      - '.:/app'
+      - './app:/app'
+      - './node_modules:/node_modules'
+      - './package.json:/package.json'
+      - './package-lock.json:/package-lock.json'
     command: /bin/sh -c "npm run dev"
     tty: true
-    networks:
-      - internal
 
   db:
     image: mysql:latest
     environment:
-      - MYSQL_DATABASE=todo
-      - MYSQL_USER=todo-app-user
-      - MYSQL_PASSWORD=default
-      - MYSQL_ROOT_PASSWORD=default
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_KEY_BUFFER_SIZE: 16M
+      MYSQL_READ_BUFFER_SIZE: 2M
+      MYSQL_SORT_BUFFER_SIZE: 1M
     ports:
       - "3306:3306"
 
   phpmyadmin:
     depends_on:
-      - database
+      - db
     image: phpmyadmin/phpmyadmin
     ports:
       - '8080:80'
     environment:
-      PMA_HOST: database
-      MYSQL_ROOT_PASSWORD: default
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       UPLOAD_LIMIT: 300M
