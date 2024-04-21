@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3.3-alpine
 
 # Get UID and GID of host user
 ARG UID
