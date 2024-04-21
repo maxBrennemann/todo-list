@@ -1,0 +1,6 @@
+RewriteEngine on
+
+#Domain localhost
+RewriteBase /
+RewriteCond %{REQUEST_METHOD} ^(GET|POST)
+RewriteRule ^(.*)$ app/main.php [NC,L]

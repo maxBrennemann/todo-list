@@ -1,36 +1,31 @@
-FROM php:8.1-apache
+FROM php:8.3.3-alpine
 
-COPY . /var/www/html
-# Copy custom php.ini if needed
-# COPY php.ini /usr/local/etc/php/
+# Get UID and GID of host user
+ARG UID
+ARG GID
 
-# Install any additional PHP extensions or dependencies here
-# For example:
-# RUN docker-php-ext-install pdo_mysql
+# Install dependencies, currently not working
+RUN apt-get update
 
-# Change Apache document root
-# RUN sed -ri -e 's!/var/www/html!/php!g' /etc/apache2/sites-available/*.conf
-# RUN sed -ri -e 's!/var/www/!/php!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+# Install necessary extensions
+RUN docker-php-ext-install pdo_mysql
 
-# Enable Apache modules if needed
-# For example:
-# RUN a2enmod rewrite
+# Enable apache mod_rewrite
+RUN a2enmod rewrite
 
+# ADD config/php.ini /usr/local/etc/php.ini
+# Set working directory
+WORKDIR /var/www/html
+
+RUN chown -R www-data:www-data /var/www
+USER www-data
+
+# https://stackoverflow.com/questions/73991553/permission-denied-for-laravel-and-docker
+# user muss danach gesetzt werden, da sonst die Rechte nicht stimmen
+#RUN usermod --non-unique --uid $UID www-data \
+ # && groupmod --non-unique --gid $UID www-data \
+ # && chown -R www-data:www-data /var/www
+USER $UID
+
+# Expose port 80 for web traffic
 EXPOSE 80
-
-
-
-#FROM php:7.4-apache
-
-#WORKDIR /var/www/html
-
-#RUN a2enmod rewrite headers
-
-#RUN docker-php-ext-install pdo_mysql
-
-#COPY . .
-#COPY . /var/www/html
-
-#EXPOSE 80
-
-#CMD [ "apache2-foreground" ]

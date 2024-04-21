@@ -8,8 +8,6 @@ CREATE TABLE `todo`.`files` (`id` INT NOT NULL AUTO_INCREMENT , `idToDo` INT NOT
 
 ALTER TABLE `lists` ADD `creationTime` TIMESTAMP NOT NULL AFTER `description`;
 
-ALTER TABLE `todos` ADD `creationTime` INT NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `description`, ADD `dueOn` DATETIME NULL AFTER `creationTime`;
-
 ALTER TABLE `todos` ADD `state` ENUM('active', 'deleted') NOT NULL AFTER `description`;
 ALTER TABLE `todos` CHANGE `state` `state` ENUM('active','deleted') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active';
 
@@ -32,8 +30,6 @@ ALTER TABLE `user` CHANGE `email` `email` VARCHAR(32) NOT NULL;
 ALTER TABLE `user` CHANGE `pwHash` `pwHash` VARCHAR(64) NOT NULL;
 
 ALTER TABLE `user` CHANGE `username` `username` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-
-ALTER TABLE `todos` DROP `creationTime`;
 
 ALTER TABLE `todos` ADD `creationTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `description`;
 

@@ -6,50 +6,33 @@ class DBAccess {
 
 	protected static $connection;
 	protected static $statement;
-
-	private static $host = HOST;
-    private static $database = DATABASE;
-    private static $username = USERNAME;
-    private static $password = PASSWORD;
 	
 	function __construct() {
 		
 	}
 	
 	private static function createConnection() {
+		if (self::$connection != null)
+			return;
+
 		try {
-			$host = self::$host;
-            $database = self::$database;
-            $username = self::$username;
-            $password = self::$password;
+			$host = $_ENV["HOST"];
+            $database = $_ENV["DATABASE"];
+            $username = $_ENV["USERNAME"];
+            $password = $_ENV["PASSWORD"];
 
 			self::$connection = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $username, $password);
 			self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch(PDOException $e) {
-			die("Error connecting to database:<br>" . $e);
+			echo "Error connecting to the database.";
+    		error_log($e->getMessage());
 		}
 	}
 	
 	public static function selectQuery($query, $params = NULL) {
 		self::createConnection();
-		
 		self::$statement = self::$connection->prepare($query);
-		
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-
-		self::$statement->execute();
+		self::$statement->execute($params);
 		$result = self::$statement->fetchAll(PDO::FETCH_ASSOC);
 		
 		return $result;
@@ -64,7 +47,7 @@ class DBAccess {
 	}
 
 	public static function selectColumnNames($table) {
-		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . DATABASE . "'";
+		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . $_ENV["DATABASE"] . "'";
 		if ($query == null)
 			return null;
 		return self::selectQuery($query);
@@ -72,24 +55,8 @@ class DBAccess {
 	
 	public static function updateQuery($query, $params = NULL) {
 		self::createConnection();
-
 		self::$statement = self::$connection->prepare($query);
-
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-		
-		return self::$statement->execute();
+		return self::$statement->execute($params);
 	}
 
 	/* exec for queries that don't return a result set */
@@ -101,46 +68,14 @@ class DBAccess {
 
 	public static function deleteQuery($query, $params = NULL) {
 		self::createConnection();
-		
 		self::$statement = self::$connection->prepare($query);
-
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-
-		self::$statement->execute();
+		self::$statement->execute($params);
 	}
 	
 	public static function insertQuery($query, $params = NULL) {
 		self::createConnection();
-		
 		self::$statement = self::$connection->prepare($query);
-
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-		
-		self::$statement->execute();
+		self::$statement->execute($params);
 		return self::$connection->lastInsertId();
 	}
 
@@ -192,6 +127,14 @@ class DBAccess {
 		self::$statement->exec();
 	}
 
+	/**
+	 * returns the number of affected rows by the last INSERT, UPDATE, DELETE query
+	 * @return int
+	 */
+	public static function getAffectedRows(): int {
+		return self::$statement->rowCount();
+	}
+
 	/* 
 	##### EXAMPLE #####
 	EXPORT_DATABASE("localhost","user","pass","db_name" ); 
@@ -227,6 +170,17 @@ class DBAccess {
 		return $content;
 	}
 
-}
+	private static function closeStatement() {
+		self::$statement = null;
+	}
+	
+	private static function closeConnection() {
+		self::$connection = null;
+	}
 
-?>
+	public static function close() {
+		self::closeStatement();
+		self::closeConnection();
+	}
+
+}
